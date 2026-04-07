@@ -1,4 +1,4 @@
-from test_string_utils import is_prime
+from string_utils import is_prime
 
 def test_is_prime_2():
     assert is_prime(2) == True
