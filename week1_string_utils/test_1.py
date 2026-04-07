@@ -9,3 +9,6 @@ def test_sum_equals_6():
 
 def test_sum_equals_0():
     assert my_sum([]) == 0
+
+def test_sum_negative():
+    assert my_sum([-1, -2, -3]) == -6
