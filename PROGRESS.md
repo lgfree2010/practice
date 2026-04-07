@@ -9,47 +9,83 @@
 | 4/4 | 周六 | 单元测试：函数测试用例设计 | ⬜ |
 | 4/5 | 周日 | 自动化测试：文件/接口/命令行 | ⬜ |
 | 4/6 | 周一 | 数据驱动测试 & 参数化 | ⬜ |
-| 4/7 | 周二 | 综合练习 | ⬜ |
-| 4/8 | 周三 | 查漏补缺 & 总结 | ⬜ |
+| 4/7 | 周二 | 综合练习 | ✅ 已完成 |
+| 4/8 | 周三 | 查漏补缺 & 总结 | 🔄 进行中 |
 
-## 每日详细任务
+---
 
-### Day 1（4/2）：Python 基础 & 环境搭建
-- [ ] 复习：变量、数据类型、字符串、列表、字典
-- [ ] 复习：条件语句、循环、函数
-- [ ] 安装 pytest + venv
-- [ ] 创建项目目录结构
+## 里程碑
 
-### Day 2（4/3）：pytest 入门
-- [ ] pytest 文件发现规则
-- [ ] assert 断言、setup/teardown
-- [ ] @pytest.mark.skip / @pytest.mark
-- [ ] 写3个简单测试用例
+### ✅ 环境搭建完成（4/7）
+- GitHub SSH 配置完成
+- venv 虚拟环境 + pytest 安装成功
+- VSCode 配置 Python 解释器
+- 项目结构：`week1_string_utils/`
 
-### Day 3（4/4）：函数测试用例设计
-- [ ] 等价类、边界值设计原则
-- [ ] @pytest.mark.parametrize
-- [ ] fixture 共享资源、pytest.raises 异常测试
+### ✅ week1_string_utils — sum() 函数 TDD（4/7）
+- **函数：** `my_sum(numbers)` — 列表求和
+- **测试用例：** 7个全覆盖
+  - `test_sum_equals_6` — 正常正数 [1,2,3] → 6
+  - `test_sum_equals_0` — 空列表 [] → 0
+  - `test_sum_negative` — 全负数 [-1,-2,-3] → -6
+  - `test_sum_float` — 浮点数 [1.6,2.4,3.0] → 7.0
+  - `test_sum_mixed` — 混合正负 [1,-2,3] → 2
+  - `test_sum_large` — 大数 [1000000,2000000,3000000] → 6000000
+  - `test_sum_single_element` — 单元素 [5] → 5
+- **状态：** 全部通过 ✅
 
-### Day 4（4/5）：自动化测试
-- [ ] 文件读写自动化测试
-- [ ] subprocess 调用外部命令
-- [ ] requests HTTP 接口测试
+### ✅ week1_string_utils — is_prime() 函数 TDD（4/8）
+- **函数：** `is_prime(n)` — 判断质数
+- **测试用例：** 7个
+  - `test_is_prime_2` — 最小质数 2 → True
+  - `test_is_prime_3` — 质数 3 → True
+  - `test_is_prime_4` — 非质数 4 → False
+  - `test_not_prime_1` — 1 不是质数 → False
+  - `test_not_prime_0` — 0 不是质数 → False
+  - `test_prime_negative` — 负数 -5 → False
+  - `test_prime_large` — 大数 997(质数)/10091000(非质数)
+- **状态：** 全部通过 ✅
 
-### Day 5（4/6）：数据驱动
-- [ ] CSV/JSON 数据驱动
-- [ ] 外部文件读取驱动测试
+### 🔄 下一步练习方向
+- [ ] reverse_string() — 字符串反转
+- [ ] max_of_three() — 三数最大值
+- [ ] 参数化测试 @pytest.mark.parametrize
+- [ ] fixture 共享资源
 
-### Day 6（4/7）：综合练习
-- [ ] 确定测试目标
-- [ ] 完整设计 + 运行 + 生成报告
+---
 
-### Day 7（4/8）：收尾
-- [ ] 回顾难点、整理代码片段
-- [ ] 总结、下一步规划
+## 踩坑记录
+
+### 坑1：venv 路径问题
+- **问题：** Python 文件放到了 `venv/` 目录下
+- **解决：** 文件放项目根目录，venv 只放环境文件
+
+### 坑2：PowerShell 执行策略限制
+- **问题：** `.\venv\Scripts\activate` 报 PSSecurityException
+- **解决：** 使用 CMD 代替 PowerShell
+
+### 坑3：pytest 找不到测试文件
+- **问题：** 文件名 `test1.py` 不符合 pytest 规范
+- **解决：** 改名为 `test_*.py`（下划线）
+
+### 坑4：pip 安装超时
+- **问题：** 访问 PyPI 超时 ReadTimeout
+- **解决：** 使用清华镜像源 `pip install pytest -i https://pypi.tuna.tsinghua.edu.cn/simple`
 
 ---
 
 ## 代码审核记录
 
-（待补充 - 代码 push 后在此记录审核意见）
+| 日期 | 分支 | 内容 | 状态 |
+|------|------|------|------|
+| 4/7 | fix/sum-naming | sum→my_sum, 删除print | ✅ |
+| 4/7 | main | 合并fix分支，7个测试全绿 | ✅ |
+| 4/8 | main | is_prime TDD，7个测试全绿 | ✅ |
+
+---
+
+## GitHub 仓库
+
+- https://github.com/lgfree2010/practice
+- 练习项目：week1_string_utils/
+- 状态：✅ 已push并review通过
