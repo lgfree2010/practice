@@ -1,13 +1,11 @@
-def sum(numbers):
+def my_sum(numbers):
     total = 0
     for n in numbers:
         total += n
     return total
 
 def test_sum_equals_6():
-    assert sum([1, 2, 3]) == 6
-    print("Test passed!")
+    assert my_sum([1, 2, 3]) == 6
 
 def test_sum_equals_0():
-    assert sum([]) == 0
-    print("Test passed!")
+    assert my_sum([]) == 0
