@@ -1,28 +1,63 @@
 # Python 测试练习进度
 
-## 练习计划（4/2 - 4/8，每天2小时）
+## 练习计划（4/8 - 4/14，每天2小时）
 
 | 日期 | 星期 | 练习内容 | 状态 |
 |------|------|----------|------|
-| 4/2 | 周四 | Python 基础回顾 & 测试环境搭建 | ⬜ |
-| 4/3 | 周五 | pytest 框架入门 | ⬜ |
-| 4/4 | 周六 | 单元测试：函数测试用例设计 | ⬜ |
-| 4/5 | 周日 | 自动化测试：文件/接口/命令行 | ⬜ |
-| 4/6 | 周一 | 数据驱动测试 & 参数化 | ⬜ |
-| 4/7 | 周二 | 综合练习 | ✅ 已完成 |
-| 4/8 | 周三 | 查漏补缺 & 总结 | 🔄 进行中 |
+| 4/8 | 周三 | Python 基础回顾 & 测试环境搭建 | ✅ 已完成 |
+| 4/9 | 周四 | pytest 框架入门 | 🔄 今日 |
+| 4/10 | 周五 | 单元测试：函数测试用例设计 | ⬜ |
+| 4/11 | 周六 | 自动化测试：文件/接口/命令行 | ⬜ |
+| 4/12 | 周日 | 数据驱动测试 & 参数化 | ⬜ |
+| 4/13 | 周一 | 综合练习 | ⬜ |
+| 4/14 | 周二 | 查漏补缺 & 总结 | ⬜ |
+
+---
+
+## 每日详细任务
+
+### Day 1（4/8）：Python 基础 & 环境搭建 ✅
+- [x] 复习：变量、数据类型、字符串、列表、字典
+- [x] 复习：条件语句、循环、函数
+- [x] 安装 pytest + venv
+- [x] VSCode 配置 Python 解释器
+- [x] GitHub SSH 配置完成
+- [x] 项目结构创建：week1_string_utils/
+
+### Day 2（4/9）：pytest 入门
+- [ ] pytest 文件发现规则（test_*.py）
+- [ ] assert 断言
+- [ ] 写3个简单测试用例
+- [ ] 运行 pytest 验证
+
+### Day 3（4/10）：函数测试用例设计
+- [ ] 等价类、边界值设计原则
+- [ ] @pytest.mark.parametrize 参数化
+- [ ] fixture 共享资源
+- [ ] pytest.raises 异常测试
+
+### Day 4（4/11）：自动化测试
+- [ ] 文件读写自动化测试
+- [ ] subprocess 调用外部命令
+- [ ] 命令行测试
+
+### Day 5（4/12）：数据驱动
+- [ ] @pytest.mark.parametrize 进阶
+- [ ] CSV/JSON 数据驱动
+
+### Day 6（4/13）：综合练习
+- [ ] 确定测试目标
+- [ ] 完整设计 + 运行
+
+### Day 7（4/14）：收尾
+- [ ] 回顾难点、整理代码片段
+- [ ] 总结、下一步规划
 
 ---
 
 ## 里程碑
 
-### ✅ 环境搭建完成（4/7）
-- GitHub SSH 配置完成
-- venv 虚拟环境 + pytest 安装成功
-- VSCode 配置 Python 解释器
-- 项目结构：`week1_string_utils/`
-
-### ✅ week1_string_utils — sum() 函数 TDD（4/7）
+### ✅ week1_string_utils — sum() 函数 TDD（4/8）
 - **函数：** `my_sum(numbers)` — 列表求和
 - **测试用例：** 7个全覆盖
   - `test_sum_equals_6` — 正常正数 [1,2,3] → 6
@@ -45,6 +80,7 @@
   - `test_prime_negative` — 负数 -5 → False
   - `test_prime_large` — 大数 997(质数)/10091000(非质数)
 - **状态：** 全部通过 ✅
+- **算法优化：** 基础版（遍历到n）→ 优化版（只需遍历到√n）
 
 ### 🔄 下一步练习方向
 - [ ] reverse_string() — 字符串反转
@@ -56,21 +92,25 @@
 
 ## 踩坑记录
 
-### 坑1：venv 路径问题
+### ✅ 坑1：venv 路径问题
 - **问题：** Python 文件放到了 `venv/` 目录下
 - **解决：** 文件放项目根目录，venv 只放环境文件
 
-### 坑2：PowerShell 执行策略限制
+### ✅ 坑2：PowerShell 执行策略限制
 - **问题：** `.\venv\Scripts\activate` 报 PSSecurityException
 - **解决：** 使用 CMD 代替 PowerShell
 
-### 坑3：pytest 找不到测试文件
+### ✅ 坑3：pytest 找不到测试文件
 - **问题：** 文件名 `test1.py` 不符合 pytest 规范
 - **解决：** 改名为 `test_*.py`（下划线）
 
-### 坑4：pip 安装超时
+### ✅ 坑4：pip 安装超时
 - **问题：** 访问 PyPI 超时 ReadTimeout
 - **解决：** 使用清华镜像源 `pip install pytest -i https://pypi.tuna.tsinghua.edu.cn/simple`
+
+### ✅ 坑5：导入路径错误
+- **问题：** `from test_string_utils import is_prime`（从测试文件导入）
+- **解决：** `from string_utils import is_prime`（从源文件导入）
 
 ---
 
