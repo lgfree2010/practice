@@ -5,7 +5,7 @@
 | 日期 | 星期 | 练习内容 | 状态 |
 |------|------|----------|------|
 | 4/8 | 周三 | Python 基础回顾 & 测试环境搭建 | ✅ 已完成 |
-| 4/9 | 周四 | pytest 框架入门 | 🔄 今日 |
+| 4/9 | 周四 | pytest 框架入门 | ✅ 已完成 |
 | 4/10 | 周五 | 单元测试：函数测试用例设计 | ⬜ |
 | 4/11 | 周六 | 自动化测试：文件/接口/命令行 | ⬜ |
 | 4/12 | 周日 | 数据驱动测试 & 参数化 | ⬜ |
@@ -24,11 +24,13 @@
 - [x] GitHub SSH 配置完成
 - [x] 项目结构创建：week1_string_utils/
 
-### Day 2（4/9）：pytest 入门
-- [ ] pytest 文件发现规则（test_*.py）
-- [ ] assert 断言
-- [ ] 写3个简单测试用例
-- [ ] 运行 pytest 验证
+### Day 2（4/9）：pytest 入门 ✅
+- [x] pytest 文件发现规则（test_*.py）
+- [x] assert 断言
+- [x] 写3个简单测试用例
+- [x] 运行 pytest 验证
+- [x] reverse_string() TDD 练习（10用例）
+- [x] max_of_three() TDD 练习（9用例）
 
 ### Day 3（4/10）：函数测试用例设计
 - [ ] 等价类、边界值设计原则
@@ -57,7 +59,50 @@
 
 ## 里程碑
 
-### ✅ week1_string_utils — sum() 函数 TDD（4/8）
+### ✅ week1_string_utils — 全部完成（4/9）
+
+| 函数 | 测试用例数 | 状态 |
+|------|-----------|------|
+| `my_sum(numbers)` 列表求和 | 7 | ✅ |
+| `is_prime(n)` 判断质数 | 7 | ✅ |
+| `reverse_string(s)` 字符串反转 | 10 | ✅ |
+| `max_of_three(a, b, c)` 三数最大 | 9 | ✅ |
+| **小计** | **33** | ✅ |
+
+---
+
+### ✅ week1_string_utils — reverse_string() 函数 TDD（4/9）
+- **函数：** `reverse_string(s)` — 字符串反转
+- **实现：** `s[::-1]` 切片
+- **测试用例：** 10个全覆盖
+  - `test_reverse_string` — 基本 "hello" → "olleh"
+  - `test_reverse_empty_string` — 空字符串 "" → ""
+  - `test_reverse_single_character` — 单字符 "a" → "a"
+  - `test_reverse_space` — 单空格 " " → " "
+  - `test_reverse_multiple_characters` — 多字符 "hello world" → "dlrow olleh"
+  - `test_reverse_Chinese` — 中文 "你好世界" → "界世好你"
+  - `test_reverse_special_characters` — 特殊字符 "!@#$%^&*()" → ")(*&^%$#@!"
+  - `test_reverse_palindrome` — 回文 "racecar"/"aba"
+  - `test_reverse_numbers` — 数字 "12345" → "54321"
+  - `test_reverse_mixed_Chinese_English` — 混合 "Hello 你好" → "好你 olleH"
+- **状态：** 全部通过 ✅
+
+### ✅ week1_string_utils — max_of_three() 函数 TDD（4/9）
+- **函数：** `max_of_three(a, b, c)` — 三数最大值
+- **实现：** `max(a, b, c)` 内置函数
+- **测试用例：** 9个全覆盖
+  - `test_max_of_basic` — 基本 1,2,3 → 3
+  - `test_max_of_equal_numbers` — 相等 5,5,5 → 5
+  - `test_max_of_negative_numbers` — 全负 -1,-2,-3 → -1
+  - `test_max_of_mixed_numbers` — 混合 -1,2,-3 → 2
+  - `test_max_of_largest` — 最大在中间 100,2002,1 → 2002
+  - `test_max_of_first_largest` — 最大在首 2002,100,1 → 2002
+  - `test_max_of_last_largest` — 最大在尾 1,100,2002 → 2002
+  - `test_max_of_second_largest` — 最大在第二 1,2002,100 → 2002
+  - `test_max_of_zero` — 零值 0,0,0 → 0
+- **状态：** 全部通过 ✅
+
+### ✅ week1_string_utils — my_sum() 函数 TDD（4/8）
 - **函数：** `my_sum(numbers)` — 列表求和
 - **测试用例：** 7个全覆盖
   - `test_sum_equals_6` — 正常正数 [1,2,3] → 6
@@ -83,10 +128,10 @@
 - **算法优化：** 基础版（遍历到n）→ 优化版（只需遍历到√n）
 
 ### 🔄 下一步练习方向
-- [ ] reverse_string() — 字符串反转
-- [ ] max_of_three() — 三数最大值
 - [ ] 参数化测试 @pytest.mark.parametrize
 - [ ] fixture 共享资源
+- [ ] pytest.raises 异常测试
+- [ ] 文件/接口自动化测试
 
 ---
 
@@ -112,6 +157,10 @@
 - **问题：** `from test_string_utils import is_prime`（从测试文件导入）
 - **解决：** `from string_utils import is_prime`（从源文件导入）
 
+### ✅ 坑6：push 报错 "remote contains work that you do not have locally"
+- **问题：** 远程有新提交，本地落后
+- **解决：** `git pull --rebase origin main` 先拉取再推送
+
 ---
 
 ## 代码审核记录
@@ -121,6 +170,9 @@
 | 4/7 | fix/sum-naming | sum→my_sum, 删除print | ✅ |
 | 4/7 | main | 合并fix分支，7个测试全绿 | ✅ |
 | 4/8 | main | is_prime TDD，7个测试全绿 | ✅ |
+| 4/8 | main | reverse_string TDD，10个测试全绿 | ✅ |
+| 4/8 | main | my_sum 整合到 string_utils.py | ✅ |
+| 4/9 | main | max_of_three TDD，9个测试全绿 | ✅ |
 
 ---
 
@@ -129,3 +181,4 @@
 - https://github.com/lgfree2010/practice
 - 练习项目：week1_string_utils/
 - 状态：✅ 已push并review通过
+- **累计测试用例：33个全部通过**
