@@ -8,3 +8,9 @@ def is_prime(n):
 
 def reverse_string(s):
     return s[::-1]
+
+def my_sum(numbers):
+    total = 0
+    for n in numbers:
+        total += n
+    return total

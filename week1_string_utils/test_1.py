@@ -1,8 +1,4 @@
-def my_sum(numbers):
-    total = 0
-    for n in numbers:
-        total += n
-    return total
+from string_utils import my_sum
 
 def test_sum_equals_6():
     assert my_sum([1, 2, 3]) == 6
