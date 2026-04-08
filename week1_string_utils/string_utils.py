@@ -14,3 +14,6 @@ def my_sum(numbers):
     for n in numbers:
         total += n
     return total
+
+def max_of_three(a, b, c):
+    return max(a, b, c)
