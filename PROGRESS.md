@@ -6,8 +6,8 @@
 |------|------|----------|------|
 | 4/8 | 周三 | Python 基础回顾 & 测试环境搭建 | ✅ 已完成 |
 | 4/9 | 周四 | pytest 框架入门 | ✅ 已完成 |
-| 4/10 | 周五 | 单元测试：函数测试用例设计 | ⬜ 未完成 |
-| 4/11 | 周六 | 单元测试：函数测试用例设计 | ⬜ |
+| 4/10 | 周五 | 单元测试：函数测试用例设计 | ⬜ 未完成（延后） |
+| 4/11 | 周六 | 单元测试：函数测试用例设计 | ✅ 已完成 |
 | 4/12 | 周日 | 自动化测试：文件/接口/命令行 | ⬜ |
 | 4/13 | 周一 | 数据驱动测试 & 参数化 | ⬜ |
 | 4/14 | 周二 | 综合练习 | ⬜ |
@@ -33,11 +33,13 @@
 - [x] reverse_string() TDD 练习（10用例）
 - [x] max_of_three() TDD 练习（9用例）
 
-### Day 3（4/11）：函数测试用例设计
-- [ ] 等价类、边界值设计原则
-- [ ] @pytest.mark.parametrize 参数化
-- [ ] fixture 共享资源
-- [ ] pytest.raises 异常测试
+### Day 3（4/11）：函数测试用例设计 ✅
+- [x] 等价类、边界值设计原则
+- [x] @pytest.mark.parametrize 参数化
+- [x] fixture 共享资源
+- [x] pytest.raises 异常测试
+- ⚠️ 测试用例丢失2条：`test_reverse_numbers`、`test_reverse_mixed_Chinese_English`
+- ⚠️ 旧注释代码未清理
 
 ### Day 4（4/12）：自动化测试
 - [ ] 文件读写自动化测试
@@ -174,6 +176,7 @@
 | 4/8 | main | reverse_string TDD，10个测试全绿 | ✅ |
 | 4/8 | main | my_sum 整合到 string_utils.py | ✅ |
 | 4/9 | main | max_of_three TDD，9个测试全绿 | ✅ |
+| 4/11 | main | parametrize重构 + pytest.raises + fixture练习 | ✅ 含2条用例丢失
 
 ---
 
