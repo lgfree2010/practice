@@ -1,4 +1,12 @@
 from string_utils import reverse_string
+import pytest
+
+@pytest.mark.parametrize("input, expected", [("hello", "olleh"), ("", ""), ("a", "a"), (" ", " "), ("hello world", "dlrow olleh"),("你好世界","界世好你"),
+                                             ("!@#$%^&*()",")(*&^%$#@!"),("racecar","racecar"),("aba","aba")])
+def test_reverse_string(input, expected):
+    assert reverse_string(input) == expected
+
+'''
 def test_reverse_string():
     assert reverse_string("hello") == "olleh"
 
@@ -29,5 +37,5 @@ def test_reverse_numbers():
 
 def test_reverse_mixed_Chinese_English():
     assert reverse_string("Hello 你好") == "好你 olleH"
-
+'''
 
