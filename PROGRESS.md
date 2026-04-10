@@ -131,10 +131,13 @@
 - **算法优化：** 基础版（遍历到n）→ 优化版（只需遍历到√n）
 
 ### 🔄 下一步练习方向
-- [ ] 参数化测试 @pytest.mark.parametrize
-- [ ] fixture 共享资源
-- [ ] pytest.raises 异常测试
-- [ ] 文件/接口自动化测试
+- [x] 参数化测试 @pytest.mark.parametrize ✅（4/11）
+- [x] fixture 共享资源 ✅（4/11）
+- [x] pytest.raises 异常测试 ✅（4/11）
+- [ ] CSV/JSON 数据驱动
+- [ ] subprocess 调用外部命令
+- [ ] 命令行测试
+- [ ] 文件读写自动化测试
 
 ---
 
