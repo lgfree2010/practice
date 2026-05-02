@@ -43,3 +43,10 @@
 |week1_string_utils/test_is_prime.py::test_is_prime_sample PASSED         [ 51%]|
 |week1_string_utils/test_max_of_three.py::test_max_of_basic PASSED        [ 54%]|
 | ``` |
+
+### 2026-05-03 01:02 ⚠️ 有失败
+
+| 项目 | 结果 |
+|------|------|
+| 测试用例 | 37 passed / 0 failed |
+| 状态 | ⚠️ 有失败 |
