@@ -167,9 +167,224 @@ def reverse_string(s: str) -> str:
 
 ---
 
-## Week 2 - 文件操作 & 异常（待开启）
+## Week 2 - 文件操作 & 异常
 
-> 每次新练习开始时，在这里补充练习要求 + 代码示范。
+### 📋 练习要求
+
+**目标**：4个函数，用 TDD 方式开发
+
+| 函数 | 功能 | 示例 |
+|------|------|------|
+| `read_file(path)` | 读取文本文件，返回字符串 | `read_file("test.txt")` → `"hello"` |
+| `write_file(path, content)` | 写入文本文件 | `write_file("out.txt", "hello")` → 创建文件 |
+| `count_lines(path)` | 统计文件行数 | `count_lines("test.txt")` → `10` |
+| `read_csv(path)` | 读取 CSV，返回 list of dict | `read_csv("data.csv")` → `[{"name":"A","age":"18"}, ...]` |
+
+**约束**：
+- 先写测试，再写实现（TDD）
+- 测试文件：`week2_file_ops/tests/test_file_utils.py`
+- 实现文件：`week2_file_ops/src/file_utils.py`
+- 数据文件：`week2_file_ops/data/`（pytest rootdir 机制见下方）
+
+---
+
+### ⚠️ pytest rootdir 机制（重要教训）
+
+pytest 自动以**运行目录的最近父目录**作为 rootdir，所有相对路径相对于 rootdir 解析。
+
+| 运行 pytest 的位置 | rootdir | `data/grades.csv` 实际找 |
+|-------------------|---------|--------------------------|
+| `D:\pytest\practice\` | `D:\pytest\practice` | `D:\pytest\practice\data\` ❌ |
+| `D:\pytest\practice\week2_file_ops\` | `D:\pytest\practice\week2_file_ops` | `D:\pytest\practice\week2_ops\data\` ✅ |
+
+**正确做法**：切换到 `week2_file_ops/` 目录再运行 pytest：
+```bash
+cd D:\pytest\practice\week2_file_ops
+python -m pytest tests/test_file_utils.py -v
+```
+
+---
+
+### 💻 代码示范
+
+#### read_file 实现
+
+```python
+def read_file(path):
+    with open(path, encoding="utf-8") as f:
+        return f.read()
+```
+
+**关键点**：不捕获异常，文件不存在自然抛 `FileNotFoundError`。
+
+---
+
+#### write_file 实现
+
+```python
+def write_file(path, content):
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(content)
+```
+
+**关键点**：`"w"` 模式会自动覆盖原文件。
+
+---
+
+#### count_lines 实现
+
+```python
+def count_lines(path):
+    with open(path, encoding="utf-8") as f:
+        return sum(1 for _ in f)  # 高效：不用读整个文件到内存
+```
+
+---
+
+#### read_csv 实现
+
+```python
+import csv
+
+def read_csv(path):
+    result = []
+    with open(path, encoding="utf-8", newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            result.append(row)
+    return result
+```
+
+**关键点**：
+- `newline=""` 是 CSV 标准写法，避免 Windows 换行问题
+- `csv.DictReader` 自动把第一行当表头，返回 dict
+
+---
+
+#### sys.path 导入（测试文件顶部）
+
+```python
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from src.file_utils import read_file, write_file, count_lines, read_csv
+```
+
+**关键点**：
+- 用 `Path(__file__)`（不是字符串），`.resolve()` 转绝对路径
+- `parents[1]` = 项目根目录（week2_file_ops/）
+
+---
+
+#### 参数化 + tmp_path（覆盖写入测试）
+
+```python
+def test_overwrite_file(tmp_path):
+    filepath = tmp_path / "output.txt"
+    write_file(str(filepath), "initial content")
+    write_file(str(filepath), "overwritten content")
+    assert read_file(str(filepath)) == "overwritten content"
+```
+
+**关键点**：`tmp_path` 是 pytest 内置 fixture，每个测试函数结束后自动清理。
+
+---
+
+### ✅ 测试用例清单
+
+#### read_file 必须覆盖
+
+| 用例 | 输入 | 预期 |
+|------|------|------|
+| 正常读 | `"data/simple_file.txt"` | `"hello"` |
+| 空文件 | `"data/empty_file.txt"` | `""` |
+| 文件不存在 | `"nonexistent_file.txt"` | 抛 `FileNotFoundError` |
+
+---
+
+#### write_file 必须覆盖
+
+| 用例 | 输入 | 预期 |
+|------|------|------|
+| 写入并读出 | 写入 `"test content"` | 读出内容一致 |
+| 覆盖写入 | 先写 `"initial"`，再写 `"overwritten"` | 最终内容是 `"overwritten"` |
+
+---
+
+#### count_lines 必须覆盖
+
+| 用例 | 输入 | 预期 |
+|------|------|------|
+| 3行文件 | `"data/three_lines.txt"` | `3` |
+| 空文件 | `"data/empty.txt"` | `0` |
+| 1行文件 | `"data/one_line.txt"` | `1` |
+
+---
+
+#### read_csv 必须覆盖
+
+| 用例 | 输入 | 预期 |
+|------|------|------|
+| 正常CSV | `"data/grades.csv"` (4行数据) | `len(result) == 4` |
+| 空CSV | `"data/empty.csv"` (只有表头) | `len(result) == 0` |
+| 文件不存在 | `"data/missing.csv"` | 抛 `FileNotFoundError` |
+
+**grades.csv 示例内容**：
+```csv
+name,age
+A,18
+B,19
+C,20
+D,21
+```
+
+---
+
+### 📝 Q&A 记录
+
+#### Q: pytest rootdir 是什么？
+**标签**: #pytest #rootdir #Week2
+
+**A**: pytest 自动以**最近父目录**作为 rootdir，所有相对路径相对于 rootdir 解析。数据文件放错位置会导致 FileNotFoundError。
+
+---
+
+#### Q: tmp_path fixture 是什么？
+**标签**: #pytest #fixture #Week2
+
+**A**: pytest 内置 fixture，每个测试函数创建独立的临时目录，函数结束后自动清理。用于文件写入测试，避免污染真实目录。
+
+---
+
+#### Q: 为什么 CSV 要用 `newline=""`？
+**标签**: #CSV #Python #Week2
+
+**A**: Python 官方文档要求的写法，避免 Windows 上的换行符问题。
+
+---
+
+#### Q: `csv.DictReader` 返回什么类型？
+**标签**: #CSV #Python #Week2
+
+**A**: 返回 `dict`（不是 `str`）。列名是 key，值是 string。如 `{"name": "A", "age": "18"}`。
+
+---
+
+#### Q: `@pytest.mark.parametrize` 参数名写错了会怎样？
+**标签**: #pytest #参数化 #Week2
+
+**A**: 会报 `fixture 'xxx' not found`。参数名必须和函数参数名一致。如 `@pytest.mark.parametrize("n,expected", ...)` → `def test_is_prime(n, expected):`。
+
+---
+
+#### Q: `Path(__file__)` 总是正确吗？
+**标签**: #Python #pathlib #Week2
+
+**A**: 基本正确。但要注意：
+- 不用引号包 `__file__`（如 `"__file__"` 会变成字符串）
+- 字符串路径要用 `Path("path")`
+- `.resolve()` 转绝对路径，避免相对路径歧义
 
 ---
 
@@ -178,3 +393,4 @@ def reverse_string(s: str) -> str:
 | 日期 | 内容 |
 |------|------|
 | 2026-05-03 | 初始建立，Week 1 内容补全 |
+| 2026-05-04 | Week 2 文件操作练习完成，12 测试全通过 |
