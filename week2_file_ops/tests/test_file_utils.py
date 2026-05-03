@@ -6,8 +6,8 @@ from src.file_utils import read_file,read_csv,write_file,count_lines
 
 # read_file测试函数，正常读-文件存在，空文件-""，文件不存在-抛出异常FileNotFoundError
 @pytest.mark.parametrize("filename, expected", [
-    ("simple_file.txt", "hello"),
-    ("empty_file.txt", "")
+    ("data/simple_file.txt", "hello"),
+    ("data/empty_file.txt", "")
 ])
 def test_read_file(filename, expected):
     assert read_file(filename) == expected
@@ -17,7 +17,7 @@ def test_read_file_not_found():
         read_file("nonexistent_file.txt")
 
 @pytest.mark.parametrize("filename, expected", [
-    ("empty_file.txt", "")
+    ("data/empty_file.txt", "")
 ])
 def test_read_file_empty(filename, expected):
     assert read_file(filename) == expected
@@ -40,7 +40,7 @@ def test_read_csv_basic():
     result = read_csv("data/grades.csv")
     assert len(result) == 4
     assert result[0]["name"] == "A"
-    assert result[0]["age"] == 18
+    assert result[0]["age"] == "18"
 
 def test_read_csv_empty():
     result = read_csv("data/empty.csv")
@@ -52,8 +52,8 @@ def test_read_csv_missing_file():
 
 #count_line测试函数
 @pytest.mark.parametrize("filename, expected", [
-    ("three_lines.txt", 3),
-    ("empty.txt", 0),
-    ("one_line.txt", 1)])
+    ("data/three_lines.txt", 3),
+    ("data/empty.txt", 0),
+    ("data/one_line.txt", 1)])
 def test_count_lines(filename, expected):
     assert count_lines(filename) == expected
