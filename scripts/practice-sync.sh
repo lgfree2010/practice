@@ -1,7 +1,7 @@
 #!/bin/bash
 # practice-sync.sh - practice 仓库同步脚本
 # 触发指令: 「同步practice」
-# 功能: git pull → 遍历各练习目录运行pytest → 检测新练习 → 更新 practice-qa.md → git push
+# 功能: git pull → 遍历各练习目录运行pytest → 合并QA → 检测新练习 → 更新 practice-qa.md → git push
 
 set -e
 
@@ -15,15 +15,13 @@ echo "=== 同步开始: $(date '+%Y-%m-%d %H:%M') ==="
 cd "$REPO_DIR"
 
 # 1. git pull
-echo "[1/5] git pull..."
+echo "[1/6] git pull..."
 git pull --quiet 2>&1 | tail -2
 
 # 2. 收集所有练习目录
-#    遍历 week* 开头的目录，如果存在 tests/test_*.py 或直接有 test_*.py 则收集
-echo "[2/5] 检测练习目录..."
+echo "[2/6] 检测练习目录..."
 EXERCISE_DIRS=()
 
-# 方式：直接用ls遍历week开头的目录
 for dir in week*; do
   if [ ! -d "$dir" ]; then
     continue
@@ -31,8 +29,7 @@ for dir in week*; do
 
   name=$(basename "$dir")
 
-  # 检查是否有测试文件
-  if [ -d "$dir/tests" ] && ls "$dir/tests/test_"*.py 1>/dev/null 2>&1; then
+  if [ -d "$dir/tests" ] && ls "$dir/test_"*.py 1>/dev/null 2>&1; then
     EXERCISE_DIRS+=("$dir")
   elif ls "$dir/test_"*.py 1>/dev/null 2>&1; then
     EXERCISE_DIRS+=("$dir")
@@ -41,11 +38,54 @@ done
 
 echo "      发现练习目录: ${EXERCISE_DIRS[*]:-无}"
 
-# 3. 遍历运行 pytest，收集结果
-echo "[3/5] 运行 pytest..."
+# 3. 合并 QA 中转文件到 practice-qa.md
+echo "[3/6] 合并 QA 中转文件..."
+for raw_file in outputs/week*-qa-raw.md; do
+  if [ ! -f "$raw_file" ]; then
+    continue
+  fi
+
+  # 从文件名提取 Week 编号和名称
+  # 例如: outputs/week2-qa-raw.md -> week2 -> Week 2
+  basename_raw=$(basename "$raw_file" .md)
+  week_name=${basename_raw%-qa-raw}  # week2-qa-raw -> week2
+  week_label=$(echo "$week_name" | sed 's/week/Week /g' | tr '[:lower:]' '[:upper:')
+
+  echo "      发现 QA 中转: $raw_file"
+
+  # 检查 practice-qa.md 是否有该章节
+  if grep -q "^## ${week_label^^}" "$QA_FILE" 2>/dev/null; then
+    # 找到该章节的位置（在 "### 📝 Q&A 记录" 之后插入）
+    section_marker=$(grep -n "^## ${week_label^^}" "$QA_FILE" 2>/dev/null | head -1 | cut -d: -f1)
+    qa_marker=$(awk -v start="$section_marker" 'NR>start && /^### 📝 Q&A 记录/' "$QA_FILE" | head -1 | cut -d: -f1)
+
+    if [ -n "$qa_marker" ]; then
+      total_lines=$(wc -l < "$QA_FILE")
+      head_count=$((qa_marker))
+      tail_count=$((total_lines - qa_marker))
+
+      # 重组: 前半部分 + Q&A 标记行 + raw 内容 + 后半部分
+      head -n "$head_count" "$QA_FILE" > /tmp/qa_head.txt
+      tail -n "$tail_count" "$QA_FILE" > /tmp/qa_tail.txt
+      cat /tmp/qa_head.txt > "$QA_FILE"
+      echo "" >> "$QA_FILE"
+      cat "$raw_file" >> "$QA_FILE"
+      echo "" >> "$QA_FILE"
+      cat /tmp/qa_tail.txt >> "$QA_FILE"
+
+      echo "      → 已合并到 practice-qa.md"
+    fi
+  fi
+
+  # 清空已合并的中转文件
+  > "$raw_file"
+  echo "      → 已清空 $raw_file"
+done
+
+# 4. 遍历运行 pytest，收集结果
+echo "[4/6] 运行 pytest..."
 TOTAL_PASSED=0
 TOTAL_FAILED=0
-PYTEST_SUMMARY=""
 
 for ex_dir in "${EXERCISE_DIRS[@]}"; do
   ex_name=$(basename "$ex_dir")
@@ -58,7 +98,6 @@ for ex_dir in "${EXERCISE_DIRS[@]}"; do
   if [ "$ex_name" = "week1_string_utils" ]; then
     output=$(python3 -m pytest "$ex_dir" -v --tb=short 2>&1)
   else
-    # week2 及以后：有 tests/ 子目录，需要 cd 到练习目录内运行
     output=$(cd "$ex_dir" && python3 -m pytest tests/ -v --tb=short 2>&1)
   fi
 
@@ -68,11 +107,10 @@ for ex_dir in "${EXERCISE_DIRS[@]}"; do
   TOTAL_FAILED=$((TOTAL_FAILED + failed))
 
   echo "      $ex_name: $passed passed / $failed failed"
-  PYTEST_SUMMARY="$PYTEST_SUMMARY $ex_name: $passed passed / $failed failed;"
 done
 
-# 4. 检测并补全 practice-qa.md 新练习章节
-echo "[4/5] 检测新练习章节..."
+# 5. 检测并补全 practice-qa.md 新练习章节
+echo "[5/6] 检测新练习章节..."
 NEW_COUNT=0
 for ex_dir in "${EXERCISE_DIRS[@]}"; do
   week_name=$(basename "$ex_dir" | sed 's/_/ /g')
@@ -119,7 +157,7 @@ if [ $NEW_COUNT -gt 0 ]; then
   echo "      新增 ${NEW_COUNT} 个练习章节占位符"
 fi
 
-# 5. 追加 sync-log.md
+# 6. 追加 sync-log.md
 {
   echo ""
   echo "### $(date '+%Y-%m-%d %H:%M')"
@@ -135,8 +173,8 @@ fi
   echo "| 状态 | $STATUS |"
 } >> "$LOG"
 
-# 6. git push 变更
-echo "[5/5] git add + commit..."
+# 7. git push 变更
+echo "[6/6] git add + commit..."
 git add outputs/ 2>/dev/null || true
 git add scripts/practice-sync.sh 2>/dev/null || true
 git add . 2>/dev/null || true
@@ -144,9 +182,9 @@ CHANGES=$(git status --short)
 if [ -n "$CHANGES" ]; then
   git commit -m "chore: 同步测试结果 $(date '+%m%d %H:%M')" 2>&1 | tail -1
   git push 2>&1 | tail -2
-  echo "[6/6] 已 push"
+  echo "      已 push"
 else
-  echo "[6/6] 无变更，跳过 push"
+  echo "      无变更，跳过 push"
 fi
 
 echo ""
